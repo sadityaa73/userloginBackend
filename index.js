@@ -8,6 +8,13 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+const signup = require('./api/signup');
+
+app.use('/api/signup', signup);
+
+const login = require('./api/login');
+
+app.use('/api/login', login);
 
 app.listen(port, (err) => {
     if (!err) {
