@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const signupModel = require('../models/signupModel');
 mongoose.set('strictQuery', true);
 
@@ -30,6 +31,35 @@ signup.post('/postusersignupdetails', async(request, response) => {
     try {
         let data = await postUserData.save();
         response.status(201).send(data);
+    } catch (error) {
+        response.status(500).send(error.message);
+    }
+})
+
+// get request for find profile by id :
+
+signup.get('/finduserprofilebyid/:username', async(request, response) => {
+    let username = request.params.username;
+    const userProfile = await signupModel.findOne({ username: username });
+    try {
+        response.status(200).send(userProfile);
+    } catch (error) {
+        response.status(500).send(error.message);
+    }
+})
+
+//patch request for reset password:
+
+signup.patch('/updateuserpassword/:_id', async(request, response) => {
+    let _id = request.params._id;
+    console.log(_id);
+    let newPassword = request.body.password;
+    let hashPassword = await bcrypt.hash(newPassword, 10);
+    console.log(hashPassword);
+    let resetPassword = await signupModel.findByIdAndUpdate(_id, { password: hashPassword });
+    try {
+        console.log(resetPassword)
+        response.status(201).send(resetPassword);
     } catch (error) {
         response.status(500).send(error.message);
     }
