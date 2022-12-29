@@ -50,10 +50,11 @@ signup.get('/finduserprofilebyid/:username', async(request, response) => {
 
 //patch request for reset password:
 
-signup.patch('/updateuserpassword/:_id', async(request, response) => {
-    let _id = request.params._id;
+signup.patch('/updateuserpassword', async(request, response) => {
+    let _id = request.body._id;
     console.log(_id);
     let newPassword = request.body.password;
+    console.log(`printing new password${newPassword}`);
     let hashPassword = await bcrypt.hash(newPassword, 10);
     console.log(hashPassword);
     let resetPassword = await signupModel.findByIdAndUpdate(_id, { password: hashPassword });
@@ -70,7 +71,7 @@ signup.patch('/updateuserpassword/:_id', async(request, response) => {
 const client = mongoose.connect("mongodb+srv://Aditya:SQJwLBgp8S9Vvm6w@cluster0.bzxsae9.mongodb.net/?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
     console.log(`mongoose signup connection sucessfull !!`);
 }).catch((error) => {
-    console.log(`mongoose signup connection error occured`);
+    console.log(`mongoose signup connection error occured${error.message}`);
 })
 
 module.exports = signup;
